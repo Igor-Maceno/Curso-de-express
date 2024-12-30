@@ -8,14 +8,15 @@ const app = express();
 
 const conn = require("./db/conn");
 
-//Model
+//Import Model
 const Toughts = require("./models/Toughts");
 const User = require("./models/User");
 
-//Routes
+//Import Routes
 const toughtsRoutes = require("./routes/toughtsRoutes");
+const authRoutes = require('./routes/authRoutes')
 
-//Controller
+//Import Controller
 const ToughtController = require("./controllers/ToughtsController");
 
 app.engine("handlebars", engine());
@@ -60,7 +61,10 @@ app.use((req, res, next) => {
   next();
 });
 
+//Routes
 app.use("/toughts", toughtsRoutes);
+app.use("/", authRoutes);
+
 app.get("/", ToughtController.showToughts);
 
 conn
