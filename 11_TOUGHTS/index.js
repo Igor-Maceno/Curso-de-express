@@ -8,8 +8,15 @@ const app = express();
 
 const conn = require("./db/conn");
 
+//Model
 const Toughts = require("./models/Toughts");
 const User = require("./models/User");
+
+//Routes
+const toughtsRoutes = require("./routes/toughtsRoutes");
+
+//Controller
+const ToughtController = require("./controllers/ToughtsController");
 
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
@@ -52,6 +59,9 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use("/toughts", toughtsRoutes);
+app.get("/", ToughtController.showToughts);
 
 conn
   .sync()
