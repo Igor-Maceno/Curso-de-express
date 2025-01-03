@@ -8,16 +8,13 @@ const app = express();
 
 const conn = require("./db/conn");
 
-//Import Model
-const Toughts = require("./models/Toughts");
-const User = require("./models/User");
+// Models
+const Tought = require("./models/Tought");
 
-//Import Routes
-const toughtsRoutes = require("./routes/toughtsRoutes");
+// routes
+const toughtsRoutes = require("./routes/toughtsRoute");
 const authRoutes = require("./routes/authRoutes");
-
-//Import Controller
-const ToughtController = require("./controllers/ToughtsController");
+const ToughController = require("./controllers/ToughtController");
 
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
@@ -30,30 +27,36 @@ app.use(
 
 app.use(express.json());
 
+//session middleware
 app.use(
   session({
-    name: "session",
-    secret: "nosso_secret",
+    name: 'session',
+    secret: 'nosso_secret',
     resave: false,
     saveUninitialized: false,
     store: new FileStore({
       logFn: function () {},
-      path: require("path").join(require("os").tmpdir(), "sessions"),
+      path: require('path').join(require('os').tmpdir(), 'sessions'),
     }),
     cookie: {
       secure: false,
-      maxAge: 360000,
-      expires: new Date(Date.now() + 360000),
+      maxAge: 3600000,
+      expires: new Date(Date.now() + 3600000),
       httpOnly: true,
     },
-  })
-);
+  }),
+)
 
+// flash messages
 app.use(flash());
 
 app.use(express.static("public"));
 
+// set session to res
 app.use((req, res, next) => {
+  // console.log(req.session)
+  console.log(req.session.userid);
+
   if (req.session.userid) {
     res.locals.session = req.session;
   }
@@ -61,14 +64,12 @@ app.use((req, res, next) => {
   next();
 });
 
-//Routes
 app.use("/toughts", toughtsRoutes);
 app.use("/", authRoutes);
 
-app.get("/", ToughtController.showToughts);
+app.get("/", ToughController.showToughts);
 
 conn
-  //.sync({ force: true })
   .sync()
   .then(() => {
     app.listen(3000);
