@@ -14,7 +14,7 @@ const User = require("./models/User");
 
 //Import Routes
 const toughtsRoutes = require("./routes/toughtsRoutes");
-const authRoutes = require('./routes/authRoutes')
+const authRoutes = require("./routes/authRoutes");
 
 //Import Controller
 const ToughtController = require("./controllers/ToughtsController");
@@ -68,6 +68,7 @@ app.use("/", authRoutes);
 app.get("/", ToughtController.showToughts);
 
 conn
+  //.sync({ force: true })
   .sync()
   .then(() => {
     app.listen(3000);
